@@ -2,6 +2,8 @@ package org.example.springBootApp.service;
 
 import org.example.springBootApp.model.User;
 import org.example.springBootApp.repository.UserRepository;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -19,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
+        logger.info("Service: Getting all users.");
         return userRepository.findAll();
     }
 }
