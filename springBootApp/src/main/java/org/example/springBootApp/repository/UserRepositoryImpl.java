@@ -1,5 +1,6 @@
 package org.example.springBootApp.repository;
 
+import jakarta.annotation.PostConstruct;
 import org.example.springBootApp.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,8 @@ public class UserRepositoryImpl implements UserRepository {
     private final List<User> users = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
-    public UserRepositoryImpl() {
+    @PostConstruct
+    public void init() {
         logger.info("Initializing UserRepositoryImpl with sample data");
         users.add(new User(1, "Alice", "alice@gmail.com"));
         users.add(new User(2, "Bob", "bob@gmail.com"));
