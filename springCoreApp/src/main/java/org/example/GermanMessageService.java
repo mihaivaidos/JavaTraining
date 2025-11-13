@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 public class GermanMessageService implements MessageService {
     @Override
     public String getMessage() {
-        return "Hallo, Spring!!!!";
+        return "Hallo von der GermanMessageService!";
     }
 }
