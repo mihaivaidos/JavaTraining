@@ -23,4 +23,15 @@ public class UserServiceImpl implements UserService {
         logger.info("Service: Getting all users.");
         return userRepository.findAll();
     }
+
+    @Override
+    public List<User> getUsersByName(String name) {
+        List<User> users = getAllUsers();
+        if (name == null || name.trim().isEmpty()) {
+            return users;
+        }
+        return users.stream()
+                .filter(user -> user.getName().toLowerCase().contains(name.toLowerCase()))
+                .toList();
+    }
 }
