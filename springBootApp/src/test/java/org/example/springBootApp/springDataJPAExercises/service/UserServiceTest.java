@@ -33,7 +33,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void saveUser() {
+    void saveUser_shouldSaveAndReturnUser() {
         when(userRepository.save(any(User.class))).thenReturn(user);
         User savedUser = userService.saveUser(user);
         assertNotNull(savedUser);
@@ -42,7 +42,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void getUserById() {
+    void getUserById_shouldReturnUser_whenUserExists() {
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         Optional<User> foundUser = userService.getUserById(1);
         assertTrue(foundUser.isPresent());
@@ -51,7 +51,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void getAllUsers() {
+    void getAllUsers_shouldReturnListOfUsers() {
         User user2 = new User(2, "testuser2", "test2@example.com", "password2", "Test2", "User2");
         List<User> users = Arrays.asList(user, user2);
         when(userRepository.findAll()).thenReturn(users);
@@ -61,7 +61,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void updateUser() {
+    void updateUser_shouldUpdateAndReturnUser() {
         when(userRepository.save(any(User.class))).thenReturn(user);
         user.setEmail("new.email@example.com");
         User updatedUser = userService.updateUser(user);
@@ -71,14 +71,14 @@ public class UserServiceTest {
     }
 
     @Test
-    void deleteUser() {
+    void deleteUser_shouldCallDeleteById() {
         doNothing().when(userRepository).deleteById(1);
         userService.deleteUser(1);
         verify(userRepository, times(1)).deleteById(1);
     }
 
     @Test
-    void getUserByUsername() {
+    void getUserByUsername_shouldReturnUser_whenUserExists() {
         when(userRepository.findByUsername("testuser")).thenReturn(user);
         User foundUser = userService.getUserByUsername("testuser");
         assertNotNull(foundUser);
@@ -87,11 +87,19 @@ public class UserServiceTest {
     }
 
     @Test
-    void getUserByEmail() {
+    void getUserByEmail_shouldReturnUser_whenUserExists() {
         when(userRepository.findByEmail("test@example.com")).thenReturn(user);
         User foundUser = userService.getUserByEmail("test@example.com");
         assertNotNull(foundUser);
         assertEquals("test@example.com", foundUser.getEmail());
         verify(userRepository, times(1)).findByEmail("test@example.com");
+    }
+
+    @Test
+    void countUsers_shouldReturnUserCount() {
+        when(userRepository.countUsers()).thenReturn(10L);
+        long userCount = userService.countUsers();
+        assertEquals(10L, userCount);
+        verify(userRepository, times(1)).countUsers();
     }
 }
