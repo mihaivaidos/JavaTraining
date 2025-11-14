@@ -1,4 +1,4 @@
-package org.example.springBootApp.model;
+package org.example.springBootApp.springBootExercises.model;
 
 public class User {
 

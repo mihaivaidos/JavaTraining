@@ -1,8 +1,8 @@
-package org.example.springBootApp.controller;
+package org.example.springBootApp.springBootExercises.controller;
 
 import jakarta.validation.constraints.Size;
-import org.example.springBootApp.model.User;
-import org.example.springBootApp.service.UserService;
+import org.example.springBootApp.springBootExercises.model.User;
+import org.example.springBootApp.springBootExercises.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;

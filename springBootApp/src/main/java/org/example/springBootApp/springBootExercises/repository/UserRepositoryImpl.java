@@ -1,7 +1,7 @@
-package org.example.springBootApp.repository;
+package org.example.springBootApp.springBootExercises.repository;
 
 import jakarta.annotation.PostConstruct;
-import org.example.springBootApp.model.User;
+import org.example.springBootApp.springBootExercises.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;

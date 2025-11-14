@@ -2,8 +2,9 @@ package org.example.springBootApp.controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolationException;
-import org.example.springBootApp.model.User;
-import org.example.springBootApp.service.UserService;
+import org.example.springBootApp.springBootExercises.controller.UserController;
+import org.example.springBootApp.springBootExercises.model.User;
+import org.example.springBootApp.springBootExercises.service.UserService;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;

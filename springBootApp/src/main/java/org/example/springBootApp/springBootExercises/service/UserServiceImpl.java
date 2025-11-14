@@ -1,7 +1,7 @@
-package org.example.springBootApp.service;
+package org.example.springBootApp.springBootExercises.service;
 
-import org.example.springBootApp.model.User;
-import org.example.springBootApp.repository.UserRepository;
+import org.example.springBootApp.springBootExercises.model.User;
+import org.example.springBootApp.springBootExercises.repository.UserRepository;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;

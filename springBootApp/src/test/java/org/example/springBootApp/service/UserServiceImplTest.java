@@ -1,7 +1,8 @@
 package org.example.springBootApp.service;
 
-import org.example.springBootApp.model.User;
-import org.example.springBootApp.repository.UserRepository;
+import org.example.springBootApp.springBootExercises.model.User;
+import org.example.springBootApp.springBootExercises.repository.UserRepository;
+import org.example.springBootApp.springBootExercises.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
