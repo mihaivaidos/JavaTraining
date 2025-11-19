@@ -2,6 +2,8 @@ package org.example.springBootApp.springDataJPAExercises.service;
 
 import org.example.springBootApp.springDataJPAExercises.model.User;
 import org.example.springBootApp.springDataJPAExercises.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +29,10 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     public Optional<User> updateUser(Integer id, User userDetails) {
