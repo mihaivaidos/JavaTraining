@@ -18,13 +18,25 @@ public class UserRepositoryImpl implements UserRepository {
     @PostConstruct
     public void init() {
         logger.info("Initializing UserRepositoryImpl with sample data");
-        users.add(new User(1, "Alice", "alice@gmail.com"));
-        users.add(new User(2, "Bob", "bob@gmail.com"));
+        users.add(new User(1L, "Alice", "alice@gmail.com"));
+        users.add(new User(2L, "Bob", "bob@gmail.com"));
     }
 
     @Override
     public List<User> findAll() {
         logger.info("Repository: Fetching all users. Found {} users.", users.size());
-        return users;
+        return new ArrayList<>(users);
+    }
+
+    @Override
+    public List<User> getUsersByName(String name) {
+        List<User> result = new ArrayList<>();
+        for (User user : users) {
+            if (user.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(user);
+            }
+        }
+        logger.info("Repository: Found {} users matching name filter: {}", result.size(), name);
+        return result;
     }
 }
