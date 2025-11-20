@@ -26,12 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsersByName(String name) {
-        List<User> users = getAllUsers();
-        if (name == null || name.trim().isEmpty()) {
-            return users;
-        }
-        return users.stream()
-                .filter(user -> user.getName().toLowerCase().contains(name.toLowerCase()))
-                .toList();
+        logger.info("Service: Getting users by name filter: {}", name);
+        return userRepository.getUsersByName(name);
     }
 }
