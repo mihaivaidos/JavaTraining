@@ -8,6 +8,7 @@ import org.example.springBootApp.springSecurityExercises.repository.UserReposito
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Set;
 
@@ -15,7 +16,7 @@ import java.util.Set;
 public class DataSeeder {
 
     @Bean
-    CommandLineRunner initDatabase(RoleRepository roleRepository, UserRepository userRepository) {
+    CommandLineRunner initDatabase(RoleRepository roleRepository, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         return args -> {
             Role adminRole = roleRepository.findByName(RoleName.ADMIN)
                     .orElseGet(() -> {
@@ -34,7 +35,7 @@ public class DataSeeder {
             if (userRepository.findByUsername("admin").isEmpty()) {
                 User admin = new User();
                 admin.setUsername("admin");
-                admin.setPassword("{noop}admin123");
+                admin.setPassword(passwordEncoder.encode("admin123"));
                 admin.setEmail("admin@test.com");
                 admin.setRoles(Set.of(adminRole));
                 userRepository.save(admin);
@@ -44,7 +45,7 @@ public class DataSeeder {
             if (userRepository.findByUsername("user").isEmpty()) {
                 User user = new User();
                 user.setUsername("user");
-                user.setPassword("{noop}user123");
+                user.setPassword(passwordEncoder.encode("user123"));
                 user.setEmail("user@test.com");
                 user.setRoles(Set.of(userRole));
                 userRepository.save(user);

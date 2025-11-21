@@ -14,6 +14,7 @@ import org.example.springBootApp.springSecurityExercises.repository.UserReposito
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -28,14 +29,17 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final SecretKey secretKey;
     private final long jwtExpirationMs = 86400000; // 24 hours
 
     public AuthServiceImpl(UserRepository userRepository,
                           RoleRepository roleRepository,
+                          BCryptPasswordEncoder passwordEncoder,
                           @Value("${jwt.secret}") String secret) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -44,8 +48,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByUsername(signInRequest.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        String storedPassword = user.getPassword().replace("{noop}", "");
-        if (!storedPassword.equals(signInRequest.getPassword())) {
+        if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid password");
         }
 
@@ -73,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
         User newUser = new User();
         newUser.setUsername(signUpRequest.getUsername());
         newUser.setEmail(signUpRequest.getEmail());
-        newUser.setPassword("{noop}" + signUpRequest.getPassword());
+        newUser.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         newUser.setRoles(Set.of(userRole));
 
         userRepository.save(newUser);
