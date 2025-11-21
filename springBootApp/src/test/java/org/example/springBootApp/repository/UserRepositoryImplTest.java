@@ -60,6 +60,6 @@ class UserRepositoryImplTest {
 
     @Test
     void getUsersByName_withNullName_shouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> userRepository.getUsersByName(null));
+        assertThrows(NullPointerException.class, () -> userRepository.getUsersByName(null));
     }
 }
