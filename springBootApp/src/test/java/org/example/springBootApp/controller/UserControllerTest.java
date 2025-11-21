@@ -3,7 +3,7 @@ package org.example.springBootApp.controller;
 import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolationException;
 import org.example.springBootApp.springBootExercises.controller.UserController;
-import org.example.springBootApp.springBootExercises.model.User;
+import org.example.springBootApp.springBootExercises.dto.UserDto;
 import org.example.springBootApp.springBootExercises.service.UserService;
 import org.junit.jupiter.api.Test;
 
@@ -33,66 +33,67 @@ public class UserControllerTest {
 
     @Test
     public void getAllUsers_shouldReturnUserList() throws Exception {
-        User user1 = new User(1, "Mihai", "mihai@gmail.com");
-        User user2 = new User(2, "Stefan", "stefan@gmail.com");
-        List<User> users = Arrays.asList(user1, user2);
+        UserDto user1 = new UserDto(1L, "Mihai", "mihai@gmail.com");
+        UserDto user2 = new UserDto(2L, "Stefan", "stefan@gmail.com");
+        List<UserDto> users = Arrays.asList(user1, user2);
 
-        when(userService.getUsersByName(null)).thenReturn(users);
+        when(userService.getAllUsers()).thenReturn(users);
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.size()").value(2))
-                .andExpect(jsonPath("$[0].name").value("Mihai"))
-                .andExpect(jsonPath("$[1].name").value("Stefan"));
+                .andExpect(jsonPath("$[*].name").value(org.hamcrest.Matchers.containsInAnyOrder("Mihai", "Stefan")))
+                .andExpect(jsonPath("$[*].email").value(org.hamcrest.Matchers.containsInAnyOrder("mihai@gmail.com", "stefan@gmail.com")));
     }
 
     @Test
-    public void getAllUsers_withValidNameParam_shouldReturnFilteredList() throws Exception {
-        User user1 = new User(1, "Mihai", "mihai@gmail.com");
-        List<User> filteredUsers = List.of(user1);
+    public void getUsersByName_withValidNameParam_shouldReturnFilteredList() throws Exception {
+        UserDto user1 = new UserDto(1L, "Mihai", "mihai@gmail.com");
+        List<UserDto> filteredUsers = List.of(user1);
 
         when(userService.getUsersByName("Mihai")).thenReturn(filteredUsers);
 
-        mockMvc.perform(get("/users").param("name", "Mihai"))
+        mockMvc.perform(get("/users/search").param("name", "Mihai"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].name").value("Mihai"));
+                .andExpect(jsonPath("$[0].name").value("Mihai"))
+                .andExpect(jsonPath("$[0].email").value("mihai@gmail.com"));
     }
 
     @Test
-    public void getAllUsers_withTooShortNameParam_shouldThrowException() {
+    public void getUsersByName_withTooShortNameParam_shouldThrowException() {
         ServletException exception = assertThrows(ServletException.class, () ->
-                mockMvc.perform(get("/users").param("name", "a"))
+                mockMvc.perform(get("/users/search").param("name", "a"))
         );
         assertInstanceOf(ConstraintViolationException.class, exception.getCause());
     }
 
     @Test
-    public void getAllUsers_withTooLongNameParam_shouldThrowException() {
+    public void getUsersByName_withTooLongNameParam_shouldThrowException() {
         String longName = "a".repeat(51);
         ServletException exception = assertThrows(ServletException.class, () ->
-                mockMvc.perform(get("/users").param("name", longName))
+                mockMvc.perform(get("/users/search").param("name", longName))
         );
         assertInstanceOf(ConstraintViolationException.class, exception.getCause());
     }
 
     @Test
-    public void getAllUsers_withEmptyNameParam_shouldThrowException() {
+    public void getUsersByName_withEmptyNameParam_shouldThrowException() {
         ServletException exception = assertThrows(ServletException.class, () ->
-                mockMvc.perform(get("/users").param("name", ""))
+                mockMvc.perform(get("/users/search").param("name", ""))
         );
         assertInstanceOf(ConstraintViolationException.class, exception.getCause());
     }
 
     @Test
     public void getAllUsers_withoutNameParam_shouldReturnAllUsers() throws Exception {
-        User user1 = new User(1, "Mihai", "mihai@gmail.com");
-        User user2 = new User(2, "Stefan", "stefan@gmail.com");
-        List<User> users = Arrays.asList(user1, user2);
+        UserDto user1 = new UserDto(1L, "Mihai", "mihai@gmail.com");
+        UserDto user2 = new UserDto(2L, "Stefan", "stefan@gmail.com");
+        List<UserDto> users = Arrays.asList(user1, user2);
 
-        when(userService.getUsersByName(null)).thenReturn(users);
+        when(userService.getAllUsers()).thenReturn(users);
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
