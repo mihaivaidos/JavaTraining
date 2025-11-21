@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
 
     public AuthServiceImpl(UserRepository userRepository,
                           RoleRepository roleRepository,
-                          @Value("${jwt.secret:mySecretKeyForJWTTokenGenerationThatIsAtLeast256BitsLong}") String secret) {
+                          @Value("${jwt.secret}") String secret) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
