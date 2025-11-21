@@ -37,8 +37,8 @@ class UserRepositoryImplTest {
 
         assertNotNull(users);
         assertEquals(1, users.size());
-        assertEquals("Alice", users.get(0).getName());
-        assertEquals("alice@gmail.com", users.get(0).getEmail());
+        assertTrue(users.stream().anyMatch(u -> u.getName().equals("Alice")));
+        assertTrue(users.stream().anyMatch(u -> u.getEmail().equals("alice@gmail.com")));
     }
 
     @Test

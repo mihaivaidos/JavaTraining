@@ -58,8 +58,8 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].name").value("Mihai"))
-                .andExpect(jsonPath("$[0].email").value("mihai@gmail.com"));
+                .andExpect(jsonPath("$[*].name").value(org.hamcrest.Matchers.containsInAnyOrder("Mihai")))
+                .andExpect(jsonPath("$[*].email").value(org.hamcrest.Matchers.containsInAnyOrder("mihai@gmail.com")));
     }
 
     @Test
@@ -97,7 +97,10 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(2));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[*].name").value(org.hamcrest.Matchers.containsInAnyOrder("Mihai", "Stefan")))
+                .andExpect(jsonPath("$[*].email").value(org.hamcrest.Matchers.containsInAnyOrder("mihai@gmail.com", "stefan@gmail.com")));
     }
 
 }
