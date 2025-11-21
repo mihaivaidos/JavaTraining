@@ -1,0 +1,5 @@
+package org.example.springBootApp.springBootExercises.dto;
+
+public record UserDto(Long id, String name, String email) {
+}
+
