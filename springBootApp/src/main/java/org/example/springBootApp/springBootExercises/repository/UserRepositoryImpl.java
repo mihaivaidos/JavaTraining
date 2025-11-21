@@ -4,10 +4,12 @@ import jakarta.annotation.PostConstruct;
 import org.example.springBootApp.springBootExercises.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -29,7 +31,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getUsersByName(String name) {
+    public List<User> getUsersByName(@NonNull String name) {
+        Objects.requireNonNull(name, "Name parameter cannot be null");
         List<User> result = new ArrayList<>();
         for (User user : users) {
             if (user.getName().toLowerCase().contains(name.toLowerCase())) {
