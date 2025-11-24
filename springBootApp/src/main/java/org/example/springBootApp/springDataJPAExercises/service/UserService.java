@@ -28,19 +28,15 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User updateUser(User user) {
-        return userRepository.save(user);
-    }
-
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
-    public User getUserByUsername(String username) {
+    public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    public User getUserByEmail(String email) {
+    public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
