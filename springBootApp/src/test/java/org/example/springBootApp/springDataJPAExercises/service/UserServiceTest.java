@@ -25,81 +25,104 @@ public class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    private User user;
+    private User user1;
+    private User user2;
 
     @BeforeEach
     void setUp() {
-        user = new User(1L, "testuser", "test@example.com", "password", "Test", "User");
+        user1 = new User(1L, "alice", "alice@example.com", "password123", "Alice", "Smith");
+        user2 = new User(2L, "bob", "bob@example.com", "password456", "Bob", "Johnson");
     }
 
     @Test
     void saveUser_shouldSaveAndReturnUser() {
-        when(userRepository.save(any(User.class))).thenReturn(user);
-        User savedUser = userService.saveUser(user);
+        when(userRepository.save(any(User.class))).thenReturn(user1);
+        User savedUser = userService.saveUser(user1);
         assertNotNull(savedUser);
-        assertEquals("testuser", savedUser.getUsername());
-        verify(userRepository, times(1)).save(user);
+        assertEquals("alice", savedUser.getUsername());
+        assertEquals("Alice", savedUser.getFirstname());
+        verify(userRepository, times(1)).save(user1);
     }
 
     @Test
     void getUserById_shouldReturnUser_whenUserExists() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         Optional<User> foundUser = userService.getUserById(1L);
         assertTrue(foundUser.isPresent());
-        assertEquals(user, foundUser.get());
+        assertEquals(user1, foundUser.get());
+        assertEquals("alice", foundUser.get().getUsername());
         verify(userRepository, times(1)).findById(1L);
     }
 
     @Test
     void getAllUsers_shouldReturnListOfUsers() {
-        User user2 = new User(2L, "testuser2", "test2@example.com", "password2", "Test2", "User2");
-        List<User> users = Arrays.asList(user, user2);
+        List<User> users = Arrays.asList(user1, user2);
         when(userRepository.findAll()).thenReturn(users);
         List<User> foundUsers = userService.getAllUsers();
+
+        assertNotNull(foundUsers);
         assertEquals(2, foundUsers.size());
+        assertTrue(foundUsers.stream().anyMatch(u -> u.getFirstname().equals("Alice")));
+        assertTrue(foundUsers.stream().anyMatch(u -> u.getFirstname().equals("Bob")));
+        assertTrue(foundUsers.stream().anyMatch(u -> u.getUsername().equals("alice")));
+        assertTrue(foundUsers.stream().anyMatch(u -> u.getUsername().equals("bob")));
+
         verify(userRepository, times(1)).findAll();
     }
 
     @Test
     void updateUser_shouldUpdateAndReturnUser() {
-        when(userRepository.save(any(User.class))).thenReturn(user);
-        user.setEmail("new.email@example.com");
-        User updatedUser = userService.updateUser(user);
+        user1.setEmail("alice.new@example.com");
+        when(userRepository.save(any(User.class))).thenReturn(user1);
+        User updatedUser = userService.updateUser(user1);
+
         assertNotNull(updatedUser);
-        assertEquals("new.email@example.com", updatedUser.getEmail());
-        verify(userRepository, times(1)).save(user);
+        assertEquals("alice.new@example.com", updatedUser.getEmail());
+        assertEquals("alice", updatedUser.getUsername());
+
+        verify(userRepository, times(1)).save(user1);
     }
 
     @Test
     void deleteUser_shouldCallDeleteById() {
         doNothing().when(userRepository).deleteById(1L);
         userService.deleteUser(1L);
+
         verify(userRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void getUserByUsername_shouldReturnUser_whenUserExists() {
-        when(userRepository.findByUsername("testuser")).thenReturn(user);
-        User foundUser = userService.getUserByUsername("testuser");
+        when(userRepository.findByUsername("alice")).thenReturn(user1);
+        User foundUser = userService.getUserByUsername("alice");
+
         assertNotNull(foundUser);
-        assertEquals("testuser", foundUser.getUsername());
-        verify(userRepository, times(1)).findByUsername("testuser");
+        assertEquals("alice", foundUser.getUsername());
+        assertEquals("Alice", foundUser.getFirstname());
+        assertEquals("alice@example.com", foundUser.getEmail());
+
+        verify(userRepository, times(1)).findByUsername("alice");
     }
 
     @Test
     void getUserByEmail_shouldReturnUser_whenUserExists() {
-        when(userRepository.findByEmail("test@example.com")).thenReturn(user);
-        User foundUser = userService.getUserByEmail("test@example.com");
+        when(userRepository.findByEmail("alice@example.com")).thenReturn(user1);
+        User foundUser = userService.getUserByEmail("alice@example.com");
+
         assertNotNull(foundUser);
-        assertEquals("test@example.com", foundUser.getEmail());
-        verify(userRepository, times(1)).findByEmail("test@example.com");
+        assertEquals("alice@example.com", foundUser.getEmail());
+        assertEquals("alice", foundUser.getUsername());
+
+        verify(userRepository, times(1)).findByEmail("alice@example.com");
     }
 
     @Test
     void countUsers_shouldReturnUserCount() {
         when(userRepository.countUsers()).thenReturn(10L);
         long userCount = userService.countUsers();
+
         assertEquals(10L, userCount);
+
         verify(userRepository, times(1)).countUsers();
     }
 }
