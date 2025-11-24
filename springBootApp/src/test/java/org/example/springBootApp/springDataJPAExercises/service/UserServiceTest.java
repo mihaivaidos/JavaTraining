@@ -29,7 +29,7 @@ public class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User(1, "testuser", "test@example.com", "password", "Test", "User");
+        user = new User(1L, "testuser", "test@example.com", "password", "Test", "User");
     }
 
     @Test
@@ -43,16 +43,16 @@ public class UserServiceTest {
 
     @Test
     void getUserById_shouldReturnUser_whenUserExists() {
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
-        Optional<User> foundUser = userService.getUserById(1);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        Optional<User> foundUser = userService.getUserById(1L);
         assertTrue(foundUser.isPresent());
         assertEquals(user, foundUser.get());
-        verify(userRepository, times(1)).findById(1);
+        verify(userRepository, times(1)).findById(1L);
     }
 
     @Test
     void getAllUsers_shouldReturnListOfUsers() {
-        User user2 = new User(2, "testuser2", "test2@example.com", "password2", "Test2", "User2");
+        User user2 = new User(2L, "testuser2", "test2@example.com", "password2", "Test2", "User2");
         List<User> users = Arrays.asList(user, user2);
         when(userRepository.findAll()).thenReturn(users);
         List<User> foundUsers = userService.getAllUsers();
@@ -72,9 +72,9 @@ public class UserServiceTest {
 
     @Test
     void deleteUser_shouldCallDeleteById() {
-        doNothing().when(userRepository).deleteById(1);
-        userService.deleteUser(1);
-        verify(userRepository, times(1)).deleteById(1);
+        doNothing().when(userRepository).deleteById(1L);
+        userService.deleteUser(1L);
+        verify(userRepository, times(1)).deleteById(1L);
     }
 
     @Test
