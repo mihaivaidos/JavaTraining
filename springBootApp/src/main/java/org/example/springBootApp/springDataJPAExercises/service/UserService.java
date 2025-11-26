@@ -1,93 +1,70 @@
 package org.example.springBootApp.springDataJPAExercises.service;
 
+import org.example.springBootApp.springDataJPAExercises.dto.UserCreateDto;
+import org.example.springBootApp.springDataJPAExercises.dto.UserDto;
+import org.example.springBootApp.springDataJPAExercises.dto.UserUpdateDto;
+import org.example.springBootApp.springDataJPAExercises.mapper.UserMapper;
 import org.example.springBootApp.springDataJPAExercises.model.User;
 import org.example.springBootApp.springDataJPAExercises.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public UserDto saveUser(UserCreateDto createDto) {
+        User user = userMapper.toEntity(createDto);
+        User saved = userRepository.save(user);
+        return userMapper.toDto(saved);
     }
 
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
-    }
-
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public Page<User> getAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable);
-    }
-
-    public Optional<User> updateUser(Long id, User userDetails) {
+    public Optional<UserDto> getUserById(Long id) {
         return userRepository.findById(id)
-                .map(user -> {
-                    user.setUsername(userDetails.getUsername());
-                    user.setEmail(userDetails.getEmail());
-                    user.setPassword(userDetails.getPassword());
-                    user.setFirstname(userDetails.getFirstname());
-                    user.setLastname(userDetails.getLastname());
-                    return userRepository.save(user);
+                .map(userMapper::toDto);
+    }
+
+    public Page<UserDto> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(userMapper::toDto);
+    }
+
+    public Optional<UserDto> updateUser(Long id, UserUpdateDto updateDto) {
+        return userRepository.findById(id)
+                .map(existing -> {
+                    userMapper.updateEntityFromDto(updateDto, existing);
+                    User saved = userRepository.save(existing);
+                    return userMapper.toDto(saved);
                 });
     }
 
     public boolean deleteUser(Long id) {
         return userRepository.findById(id)
                 .map(user -> {
-                    userRepository.deleteById(id);
+                    userRepository.delete(user);
                     return true;
                 })
                 .orElse(false);
     }
 
-    public Optional<User> partialUpdateUser(Long id, Map<String, Object> updates) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    updates.forEach((key, value) -> {
-                        switch (key) {
-                            case "username":
-                                user.setUsername((String) value);
-                                break;
-                            case "email":
-                                user.setEmail((String) value);
-                                break;
-                            case "password":
-                                user.setPassword((String) value);
-                                break;
-                            case "firstname":
-                                user.setFirstname((String) value);
-                                break;
-                            case "lastname":
-                                user.setLastname((String) value);
-                                break;
-                        }
-                    });
-                    return userRepository.save(user);
-                });
+    public Optional<UserDto> getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(userMapper::toDto);
     }
 
-    public Optional<User> getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public Optional<UserDto> getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(userMapper::toDto);
     }
 
     public long countUsers() {
