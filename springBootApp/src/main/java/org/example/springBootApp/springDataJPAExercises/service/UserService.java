@@ -11,7 +11,6 @@ import org.example.springBootApp.springDataJPAExercises.repository.UserRepositor
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -26,9 +25,7 @@ public class UserService {
     }
 
     public UserDto saveUser(UserCreateDto createDto) {
-        User user = userMapper.mapUserCreateDtoToUser(createDto);
-        User saved = userRepository.save(user);
-        return userMapper.mapUserToUserDto(saved);
+        return userMapper.mapUserToUserDto(userRepository.save(userMapper.mapUserCreateDtoToUser(createDto)));
     }
 
     public Optional<UserDto> getUserById(Long id) {
