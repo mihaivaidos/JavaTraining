@@ -3,7 +3,6 @@ package org.example.springBootApp.springDataJPAExercises.exception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 
 @Getter

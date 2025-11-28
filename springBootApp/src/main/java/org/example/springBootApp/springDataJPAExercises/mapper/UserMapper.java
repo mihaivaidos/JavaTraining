@@ -2,14 +2,15 @@ package org.example.springBootApp.springDataJPAExercises.mapper;
 
 import org.example.springBootApp.springDataJPAExercises.dto.UserCreateDto;
 import org.example.springBootApp.springDataJPAExercises.dto.UserDto;
-import org.example.springBootApp.springDataJPAExercises.dto.UserUpdateDto;
+import org.example.springBootApp.springDataJPAExercises.dto.UserPatchDto;
+import org.example.springBootApp.springDataJPAExercises.dto.UserPutDto;
 import org.example.springBootApp.springDataJPAExercises.model.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
 
-    public UserDto toDto(User user) {
+    public UserDto mapUserToUserDto(User user) {
         if (user == null) {
             return null;
         }
@@ -22,7 +23,7 @@ public class UserMapper {
                 .build();
     }
 
-    public User toEntity(UserCreateDto userCreateDto) {
+    public User mapUserCreateDtoToUser(UserCreateDto userCreateDto) {
         if (userCreateDto == null) {
             return null;
         }
@@ -35,24 +36,35 @@ public class UserMapper {
         return user;
     }
 
-    public void updateEntityFromDto(UserUpdateDto userUpdateDto, User user) {
-        if (userUpdateDto == null || user == null) {
+    public void updateUserFromUserPutDto(UserPutDto userPutDto, User user) {
+        if (userPutDto == null || user == null) {
             return;
         }
-        if (userUpdateDto.getUsername() != null) {
-            user.setUsername(userUpdateDto.getUsername());
+        user.setUsername(userPutDto.getUsername());
+        user.setEmail(userPutDto.getEmail());
+        user.setPassword(userPutDto.getPassword());
+        user.setFirstname(userPutDto.getFirstname());
+        user.setLastname(userPutDto.getLastname());
+    }
+
+    public void updateUserFromUserPatchDto(UserPatchDto userPatchDto, User user) {
+        if (userPatchDto == null || user == null) {
+            return;
         }
-        if (userUpdateDto.getEmail() != null) {
-            user.setEmail(userUpdateDto.getEmail());
+        if (userPatchDto.getUsername() != null) {
+            user.setUsername(userPatchDto.getUsername());
         }
-        if (userUpdateDto.getPassword() != null) {
-            user.setPassword(userUpdateDto.getPassword());
+        if (userPatchDto.getEmail() != null) {
+            user.setEmail(userPatchDto.getEmail());
         }
-        if (userUpdateDto.getFirstname() != null) {
-            user.setFirstname(userUpdateDto.getFirstname());
+        if (userPatchDto.getPassword() != null) {
+            user.setPassword(userPatchDto.getPassword());
         }
-        if (userUpdateDto.getLastname() != null) {
-            user.setLastname(userUpdateDto.getLastname());
+        if (userPatchDto.getFirstname() != null) {
+            user.setFirstname(userPatchDto.getFirstname());
+        }
+        if (userPatchDto.getLastname() != null) {
+            user.setLastname(userPatchDto.getLastname());
         }
     }
 }

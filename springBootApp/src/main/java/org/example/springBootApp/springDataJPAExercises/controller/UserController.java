@@ -7,17 +7,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.example.springBootApp.springDataJPAExercises.dto.UserCreateDto;
 import org.example.springBootApp.springDataJPAExercises.dto.UserDto;
-import org.example.springBootApp.springDataJPAExercises.dto.UserUpdateDto;
+import org.example.springBootApp.springDataJPAExercises.dto.UserPatchDto;
+import org.example.springBootApp.springDataJPAExercises.dto.UserPutDto;
 import org.example.springBootApp.springDataJPAExercises.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 
 @RestController
@@ -67,7 +66,7 @@ public class UserController {
                     content = @Content)
     })
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserCreateDto userCreateDto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody UserCreateDto userCreateDto) {
         UserDto createdUser = userService.saveUser(userCreateDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -88,8 +87,8 @@ public class UserController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@Parameter(description = "ID of the user to be updated") @PathVariable Long id,
-                                           @Valid @RequestBody UserUpdateDto userUpdateDto) {
-        return userService.updateUser(id, userUpdateDto)
+                                              @RequestBody UserPutDto userPutDto) {
+        return userService.updateUser(id, userPutDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -118,8 +117,8 @@ public class UserController {
     })
     @PatchMapping("/{id}")
     public ResponseEntity<UserDto> partialUpdateUser(@Parameter(description = "ID of the user to be updated") @PathVariable Long id,
-                                                  @Valid @RequestBody UserUpdateDto userUpdateDto) {
-        return userService.updateUser(id, userUpdateDto)
+                                                     @RequestBody UserPatchDto userPatchDto) {
+        return userService.updateUser(id, userPatchDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
